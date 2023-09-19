@@ -36,6 +36,10 @@ The package relies on a yaml helper binary that can be installed from https://gi
 
 ![Demo](docs/open-overlays.gif)
 
+- Generate kustomize result
+
+![Demo](docs/generate.gif)
+
 ## Example configuration
 
 ```lisp
@@ -43,6 +47,7 @@ The package relies on a yaml helper binary that can be installed from https://gi
       (progn
         (when (kustomize-in-kustomize-file)
           (define-key global-map [f12]              'kustomize-open-at-point)
+          (define-key global-map [f5]               'kustomize-generate)
           (define-key global-map (kbd "C-<f12>")    'kustomize-open-at-point-other-window)
           (define-key global-map "\C-e"             'kustomize-patch-at-point)
           (kustomize-which-func))
@@ -72,7 +77,9 @@ The package relies on a yaml helper binary that can be installed from https://gi
 | `kustomize-open-at-point`              | calls `resolve-at-point` interactively, open-file result if exists. When symbol is a directory, looks for a `kustomization.yaml` file in that directory |
 | `kustomize-open-at-point-other-window` | like `kustomize-open-at-point` but opens file in another window                                                                                         |
 | `kustomize-open-overlay`               | search available overlays, prompt selection with IDO and open selected file `kustomization.yaml` file                                                   |
+| `kustomize-generate`                   | runs `kubectl kustomize` for current kustomization overlay, prints result in `kustomize-buffer-name` temporary buffer                                   |
 
 | Customize                   | Description                                                                                                           |
 |-----------------------------|-----------------------------------------------------------------------------------------------------------------------|
 | `kustomize-yaml-helper-bin` | path to `kustomize-yaml-helper` binary, default to `kustomize-yaml-helper` which expects binary to be present in PATH |
+| `kustomize-buffer-name`     | temporary buffer name for `kustomize-generate` command                                                                |

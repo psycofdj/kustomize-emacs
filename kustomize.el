@@ -7,15 +7,33 @@
   :type 'string
   :safe 'stringp)
 
-(defcustom kustomize-generate-command
-  "kubectl kustomize"
-  "command to generate kustomization from directory"
+(defcustom kustomize-buffer-name
+  "*kustomize*"
+  "name of temporary buffer where kustomize output is printed"
   :group 'kustomize
   :type 'string
   :safe 'stringp)
 
 ;;;###autoload
 (defun kustomize-generate()
+  (interactive)
+  (let* ((origin (buffer-file-name))
+         (dir    (file-name-directory origin))
+         (outbuf (get-buffer-create kustomize-buffer-name))
+         (pos    0))
+    (if (buffer-modified-p (current-buffer))
+        (if (y-or-n-p "File has pending changes, save file ? ")
+            (save-buffer)))
+    (save-excursion
+      (set-buffer kustomize-buffer-name)
+      (setq pos (point))
+      (message "point: %s" pos)
+      (erase-buffer))
+    (call-process "kubectl" nil outbuf t "kustomize" dir)
+    (display-buffer kustomize-buffer-name)
+    (let* ((window (get-buffer-window kustomize-buffer-name)))
+      (set-window-point window pos))
+    )
   )
 
 ;;;###autoload
